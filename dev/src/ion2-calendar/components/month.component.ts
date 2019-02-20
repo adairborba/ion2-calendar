@@ -47,7 +47,12 @@ export const MONTH_VALUE_ACCESSOR: any = {
                  [class.is-first-wrap]="day?.isFirst"
                  [class.is-last-wrap]="day?.isLast"
                  [class.between]="isBetween(day)">
+
               <ng-container *ngIf="day">
+
+                <div class="back-left" [ngStyle]="getColor(day)"></div>
+                <div class="back-right" [ngStyle]="getColor(day)"></div>
+
                 <button type='button'
                         [class]="'days-btn ' + day.cssClass"
                         [class.today]="day.isToday"
@@ -58,7 +63,8 @@ export const MONTH_VALUE_ACCESSOR: any = {
                         [class.is-first]="day.isFirst"
                         [class.is-last]="day.isLast"
                         [class.on-selected]="isSelected(day.time)"
-                        [disabled]="day.disable">
+                        [disabled]="day.disable"
+                        [ngStyle]="getColor(day)">
                   <p>{{ day.title }}</p>
                   <small *ngIf="day.subTitle">{{ day?.subTitle }}</small>
                 </button>
@@ -85,6 +91,9 @@ export class MonthComponent implements ControlValueAccessor, AfterViewInit {
   @Input()
   color: string = defaults.COLOR;
 
+  @Input()
+  colors: Array<string> = [defaults.COLOR];
+
   @Output()
   change: EventEmitter<CalendarDay[]> = new EventEmitter();
   @Output()
@@ -99,8 +108,17 @@ export class MonthComponent implements ControlValueAccessor, AfterViewInit {
   _onChanged: Function;
   _onTouched: Function;
 
+  getColor(day: CalendarDay): any {
+    // colors
+    if (day.isBetween || day.isStartRange || day.isEndRange) {
+      return {'background-color': this.colors[day.type]}; // '#F334FF';
+    } else {
+      return '';
+    }
+  }
+
   get _isRange(): boolean {
-    return this.pickMode === pickModes.RANGE;
+    return (this.pickMode === pickModes.RANGE) || (this.pickMode === pickModes.MULTI_RANGE);
   }
 
   constructor(public ref: ChangeDetectorRef) {}
@@ -133,15 +151,45 @@ export class MonthComponent implements ControlValueAccessor, AfterViewInit {
 
   isEndSelection(day: CalendarDay): boolean {
     if (!day) return false;
-    if (this.pickMode !== pickModes.RANGE || !this._isInit || this._date[1] === null) {
+
+    day.isEndRange = false;
+
+    if (( this.pickMode === pickModes.MULTI_RANGE ) && (this._isInit) && (this._date[0] !== null)) {
+      const l = this._date.length;
+      for (let i = 1; i < this._date.length; i = i + 2) {
+        if ( this._date[i].time === day.time ) {
+          day.isEndRange = true;
+          day.type = (i - 1) / 2;
+          return true;
+        }
+      }
       return false;
     }
 
+    if (this.pickMode !== pickModes.RANGE || !this._isInit || this._date[1] === null) {
+      return false;
+    }
     return this._date[1].time === day.time;
   }
 
   isBetween(day: CalendarDay): boolean {
     if (!day) return false;
+
+    day.isBetween = false;
+
+    if (( this.pickMode === pickModes.MULTI_RANGE ) && (this._isInit) && (this._date[0] !== null)) {
+      const l = this._date.length;
+      for (let i = 0; i < this._date.length; i = i + 2) {
+        const start2 = this._date[i].time;
+        const end2 = this._date[ i + 1 ].time;
+        if (day.time < end2 && day.time > start2) {
+          day.isBetween = true;
+          day.type = i / 2;
+          return true;
+        }
+      }
+      return false;
+    }
 
     if (this.pickMode !== pickModes.RANGE || !this._isInit) {
       return false;
@@ -153,12 +201,27 @@ export class MonthComponent implements ControlValueAccessor, AfterViewInit {
 
     const start = this._date[0].time;
     const end = this._date[1].time;
-
-    return day.time < end && day.time > start;
+    day.isBetween = day.time < end && day.time > start;
+    return day.isBetween;
   }
 
   isStartSelection(day: CalendarDay): boolean {
     if (!day) return false;
+
+    day.isStartRange = false;
+
+    if ((this.pickMode === pickModes.MULTI_RANGE) && (this._isInit) && (this._date[0] !== null)) {
+      const l = this._date.length; // 4 => 2
+      for (let i = 0; i < this._date.length; i = i + 2) {
+        if ( this._date[i].time === day.time ) {
+          day.isStartRange = true;
+          day.type = i / 2;
+          return true;
+        }
+      }
+      return false;
+    }
+
     if (this.pickMode !== pickModes.RANGE || !this._isInit || this._date[0] === null) {
       return false;
     }
@@ -226,6 +289,29 @@ export class MonthComponent implements ControlValueAccessor, AfterViewInit {
         this._date.splice(index, 1);
       }
       this.change.emit(this._date.filter(e => e !== null));
+    }
+
+    if (this.pickMode === pickModes.MULTI_RANGE) {
+      if (this._date[0] === null) {
+        this._date[0] = item;
+        this.selectStart.emit(item);
+      } else if (this._date[1] === null) {
+        if (this._date[0].time < item.time) {
+          this._date[1] = item;
+          this.selectEnd.emit(item);
+        } else {
+          this._date[1] = this._date[0];
+          this.selectEnd.emit(this._date[0]);
+          this._date[0] = item;
+          this.selectStart.emit(item);
+        }
+      } else {
+        this._date[0] = item;
+        this.selectStart.emit(item);
+        this._date[1] = null;
+      }
+      this.change.emit(this._date);
+      return;
     }
   }
 }

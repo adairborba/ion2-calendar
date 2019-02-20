@@ -62,6 +62,7 @@ const NUM_OF_MONTHS_TO_CREATE = 3;
                                 [isSaveHistory]="_d.isSaveHistory"
                                 [id]="_d.id"
                                 [color]="_d.color"
+                                [colors]="colors"
                                 (change)="onChange($event)"
                                 [(ngModel)]="datesTemp">
             </ion-calendar-month>
@@ -98,6 +99,7 @@ export class CalendarModal implements OnInit, AfterViewInit {
   _scrollLock = true;
   _d: CalendarModalOptions;
   actualFirstTime: number;
+  colors: Array<string> = [];
 
   constructor(
     private _renderer: Renderer2,
@@ -135,7 +137,7 @@ export class CalendarModal implements OnInit, AfterViewInit {
   }
 
   initDefaultDate(): void {
-    const { pickMode, defaultDate, defaultDateRange, defaultDates } = this._d;
+    const { pickMode, defaultDate, defaultDateRange, defaultDateRangeMulti, defaultDates } = this._d;
     switch (pickMode) {
       case pickModes.SINGLE:
         if (defaultDate) {
@@ -157,6 +159,20 @@ export class CalendarModal implements OnInit, AfterViewInit {
           this.datesTemp = defaultDates.map(e => this.calSvc.createCalendarDay(this._getDayTime(e), this._d));
         }
         break;
+
+      case pickModes.MULTI_RANGE:
+        if (defaultDateRangeMulti) {
+          for (let i = 0; i < defaultDateRangeMulti.length; i++) {
+            if (defaultDateRangeMulti[i].from) {
+              this.datesTemp[i * 2] = this.calSvc.createCalendarDay(this._getDayTime(defaultDateRangeMulti[i].from), this._d);
+            }
+            if (defaultDateRangeMulti[i].to) {
+              this.datesTemp[(i * 2) + 1] = this.calSvc.createCalendarDay(this._getDayTime(defaultDateRangeMulti[i].to), this._d);
+            }
+            this.colors[i] = defaultDateRangeMulti[i].color;
+          }
+        }
+      break;
       default:
         this.datesTemp = [null, null];
     }

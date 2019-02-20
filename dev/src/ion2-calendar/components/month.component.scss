@@ -59,6 +59,7 @@ $disabled-color: rgba(0, 0, 0, 0.25);
     background-color: bindColors($background-color);
     color: $color;
   }
+
   .startSelection {
     position: relative;
 
@@ -80,6 +81,16 @@ $disabled-color: rgba(0, 0, 0, 0.25);
       background-color: white;
       opacity: 0.25;
     }
+
+    .back-right {
+      width: 50%;
+      height: 100%;
+      top: 0px;
+      left: 50%;
+      position: absolute;
+    }
+
+    border-radius: 0 36px 36px 0
   }
   .endSelection {
     position: relative;
@@ -101,6 +112,13 @@ $disabled-color: rgba(0, 0, 0, 0.25);
     &:after {
       background-color: white;
       opacity: 0.25;
+    }
+
+    .back-left {
+      width: 50%;
+      height: 100%;
+      top: 0px;
+      position: absolute;
     }
   }
   .startSelection.endSelection {
@@ -143,6 +161,7 @@ $disabled-color: rgba(0, 0, 0, 0.25);
 
   .days.startSelection:nth-child(7n):before,
   .days.between:nth-child(7n) button.days-btn,
+  .days.startSelection:nth-child(7n) .back-right,
   button.days-btn.is-last {
     border-radius: 0 36px 36px 0;
     &.on-selected {
@@ -276,5 +295,8 @@ $disabled-color: rgba(0, 0, 0, 0.25);
   }
   .cal-color {
     @include month-color(cal-color);
+  }
+  .whyte {
+    @include month-color(#FFF);
   }
 }

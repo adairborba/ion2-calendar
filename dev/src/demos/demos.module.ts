@@ -1,3 +1,4 @@
+import { DemoModalRangeMultiComponent } from './demo-modal-range-multi';
 import { NgModule } from '@angular/core';
 import { IonicModule } from '@ionic/angular';
 import { CalendarModule } from '../ion2-calendar';
@@ -26,6 +27,7 @@ const COMPONENTS = [
   DemoModalBasicComponent,
   DemoModalMultiComponent,
   DemoModalRangeComponent,
+  DemoModalRangeMultiComponent,
   DemoModalCustomSubHeaderComponent,
   SubHeaderCalendarModal,
   DemoModalDisableWeekComponent,

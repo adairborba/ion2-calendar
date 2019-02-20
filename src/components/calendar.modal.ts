@@ -135,7 +135,7 @@ export class CalendarModal implements OnInit, AfterViewInit {
   }
 
   initDefaultDate(): void {
-    const { pickMode, defaultDate, defaultDateRange, defaultDates } = this._d;
+    const { pickMode, defaultDate, defaultDateRange, defaultDateRangeMulti, defaultDates } = this._d;
     switch (pickMode) {
       case pickModes.SINGLE:
         if (defaultDate) {
@@ -155,6 +155,19 @@ export class CalendarModal implements OnInit, AfterViewInit {
       case pickModes.MULTI:
         if (defaultDates && defaultDates.length) {
           this.datesTemp = defaultDates.map(e => this.calSvc.createCalendarDay(this._getDayTime(e), this._d));
+        }
+        break;
+      case pickModes.MULTI_RANGE:
+        if (defaultDateRangeMulti) {
+          for (let i = 0; i < defaultDateRangeMulti.length; i++){
+            if (defaultDateRangeMulti[i].from) {
+              this.datesTemp[i] = this.calSvc.createCalendarDay(this._getDayTime(defaultDateRangeMulti[i].from), this._d);
+            }
+            if (defaultDateRange.to) {
+              this.datesTemp[i+1] = this.calSvc.createCalendarDay(this._getDayTime(defaultDateRangeMulti[i].to), this._d);
+            }
+            console.log( this.datesTemp );
+          }
         }
         break;
       default:

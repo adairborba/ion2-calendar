@@ -79,6 +79,7 @@ export class CalendarService {
       defaultDate: calendarOptions.defaultDate || null,
       defaultDates: calendarOptions.defaultDates || null,
       defaultDateRange: calendarOptions.defaultDateRange || null,
+      defaultDateRangeMulti: calendarOptions.defaultDateRangeMulti || null,
       showAdjacentMonthDay,
     };
   }
@@ -162,6 +163,10 @@ export class CalendarService {
       disable: _disable,
       isFirst: date.date() === 1,
       isLast: date.date() === date.daysInMonth(),
+      isBetween: false,
+      isStartRange: false,
+      isEndRange: false,
+      type: -1
     };
   }
 

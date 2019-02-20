@@ -8,5 +8,6 @@ export const defaults = {
 export const pickModes = {
   SINGLE: 'single',
   RANGE: 'range',
-  MULTI: 'multi'
+  MULTI: 'multi',
+  MULTI_RANGE: 'multirange'
 };
