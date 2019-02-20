@@ -155,7 +155,6 @@ export class MonthComponent implements ControlValueAccessor, AfterViewInit {
     day.isEndRange = false;
 
     if (( this.pickMode === pickModes.MULTI_RANGE ) && (this._isInit) && (this._date[0] !== null)) {
-      const l = this._date.length;
       for (let i = 1; i < this._date.length; i = i + 2) {
         if ( this._date[i].time === day.time ) {
           day.isEndRange = true;
@@ -178,7 +177,6 @@ export class MonthComponent implements ControlValueAccessor, AfterViewInit {
     day.isBetween = false;
 
     if (( this.pickMode === pickModes.MULTI_RANGE ) && (this._isInit) && (this._date[0] !== null)) {
-      const l = this._date.length;
       for (let i = 0; i < this._date.length; i = i + 2) {
         const start2 = this._date[i].time;
         const end2 = this._date[ i + 1 ].time;
@@ -211,7 +209,6 @@ export class MonthComponent implements ControlValueAccessor, AfterViewInit {
     day.isStartRange = false;
 
     if ((this.pickMode === pickModes.MULTI_RANGE) && (this._isInit) && (this._date[0] !== null)) {
-      const l = this._date.length; // 4 => 2
       for (let i = 0; i < this._date.length; i = i + 2) {
         if ( this._date[i].time === day.time ) {
           day.isStartRange = true;

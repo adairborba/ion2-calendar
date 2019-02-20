@@ -26,6 +26,10 @@ export interface CalendarDay {
   };
   isFirst?: boolean;
   isLast?: boolean;
+  isBetween?: boolean;
+  isStartRange?: boolean;
+  isEndRange?: boolean;
+  type?: number;
 }
 
 export class CalendarMonth {
@@ -65,7 +69,7 @@ export interface CalendarModalOptions extends CalendarOptions {
   defaultDate?: DefaultDate;
   defaultDates?: DefaultDate[];
   defaultDateRange?: { from: DefaultDate; to?: DefaultDate } | null;
-  defaultDateRangeMulti?: Array<{ from: DefaultDate; to?: DefaultDate }> | null;
+  defaultDateRangeMulti?: Array<{ from: DefaultDate; to?: DefaultDate, color?: string }> | null;
   step?: number;
   /**
    * @deprecated this version notwork

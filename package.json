@@ -1,6 +1,6 @@
 {
   "name": "ion2-calendar-dna",
-  "version": "3.0.1",
+  "version": "4.0.0",
   "description": "A date picker component for ionic2 ",
   "main": "./dist/index.js",
   "typings": "./dist/index.d.ts",
